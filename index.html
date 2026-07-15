@@ -4,407 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>A'lo Market Pro</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Iconlar -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
     <style>
-        body {
-            background: radial-gradient(circle at top, #1f1f1f 0%, #0d0d0d 100%);
-            color: #ffffff;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .smooth-gpu {
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            will-change: transform, opacity;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .product-card {
-            perspective: 1000px;
-        }
-        .product-card-inner {
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-style: preserve-3d;
-        }
-        .product-card:hover .product-card-inner {
-            transform: translateY(-8px) rotateX(4deg) rotateY(2deg);
-            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15);
-        }
-        #zoom-modal {
-            backdrop-filter: blur(15px);
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #zoom-img {
-            transform: scale(0.5) rotateY(30deg);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #zoom-modal.active #zoom-img {
-            transform: scale(1) rotateY(0deg);
-        }
-        .btn-animate {
-            transition: all 0.2s ease;
-        }
-        .btn-animate:active {
-            transform: scale(0.95);
-        }
+        body { background: radial-gradient(circle at top, #1f1f1f 0%, #0d0d0d 100%); color: #ffffff; font-family: 'Segoe UI', Roboto, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .smooth-gpu { transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform, opacity; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .product-card:hover .product-card-inner { transform: translateY(-8px) rotateX(4deg) rotateY(2deg); box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15); }
+        .btn-animate:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="min-h-screen pb-12">
 
     <!-- Header -->
-    <header class="border-b border-gray-800 bg-[#141414]/90 backdrop-blur-md sticky top-0 z-40 px-4 py-4 smooth-gpu">
+    <header class="border-b border-gray-800 bg-[#141414]/90 backdrop-blur-md sticky top-0 z-40 px-4 py-4">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 bg-gradient-to-tr from-orange-600 to-amber-500 rounded-2xl flex items-center justify-center font-black text-2xl text-black shadow-lg shadow-orange-500/20 animate__animated animate__fadeInLeft">A</div>
-                <div class="animate__animated animate__fadeInLeft">
-                    <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-400 italic tracking-wider">A'lo Market</h1>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3 animate__animated animate__fadeInRight">
-                <div class="bg-[#1e1e1e] p-1 rounded-xl border border-gray-800 flex gap-1">
-                    <button id="lang-uz" onclick="setLanguage('uz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition-all bg-orange-500 text-black">UZ</button>
-                    <button id="lang-ru" onclick="setLanguage('ru')" class="px-2.5 py-1 rounded-lg text-xs font-black transition-all text-gray-400">RU</button>
-                </div>
-                <button onclick="openAdminPanel()" class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-orange-500/10 btn-animate">
-                    <i class="fa-solid fa-lock-open text-xs"></i> <span data-key="adminBtn">Admin</span>
-                </button>
-            </div>
+            <h1 class="text-2xl font-black text-orange-500 italic">A'lo Market</h1>
+            <button onclick="openAdminPanel()" class="bg-orange-500 text-black px-4 py-2 rounded-xl text-xs font-bold">Admin</button>
         </div>
     </header>
 
     <!-- Katalog -->
     <main class="max-w-4xl mx-auto px-4 mt-8">
-        <h2 class="text-xl font-black text-gray-300 mb-6 flex items-center gap-2.5 animate__animated animate__fadeInUp">
-            <span class="w-2.5 h-6 bg-orange-500 rounded-full shadow-lg shadow-orange-500/50"></span> 
-            <span data-key="catalogTitle">Mahsulotlar katalogi</span>
-        </h2>
-        
-        <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6 smooth-gpu">
-            <!-- Supabase bazasidan tovarlar yuklanadi -->
-        </div>
+        <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
     </main>
 
-    <!-- 3D Zoom Rasm Modali -->
-    <div id="zoom-modal" class="fixed inset-0 bg-black/95 hidden z-[100] flex items-center justify-center p-2 opacity-0" onclick="closeZoom()">
-        <div class="relative w-full h-full flex items-center justify-center">
-            <button class="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-            <img id="zoom-img" class="max-w-full max-h-[90vh] object-contain rounded-3xl shadow-2xl border border-white/10 smooth-gpu" src="" alt="Full Screen">
-        </div>
-    </div>
-
-    <!-- Buyurtma va To'lov Modali -->
-    <div id="order-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 smooth-gpu">
-        <div class="bg-[#181818] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl animate__animated animate__zoomIn animate__fast">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-2xl font-black text-orange-500 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-dollar-to-slot text-xl"></i> <span data-key="orderTitle">Buyurtma</span>
-                </h3>
-                <button onclick="closeOrderModal()" class="text-gray-400 hover:text-white bg-gray-900/50 w-8 h-8 rounded-full flex items-center justify-center border border-gray-800 btn-animate">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+    <!-- Buyurtma Modali -->
+    <div id="order-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#181818] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-2xl font-black text-orange-500 mb-4">Buyurtma</h3>
+            <p id="modal-product-name" class="font-bold mb-2"></p>
+            <p id="modal-product-price" class="text-2xl font-black text-orange-500 mb-4"></p>
+            
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="setPaymentType('cash')" id="pay-cash" class="py-3 rounded-xl bg-orange-500 text-black font-bold">Naqd pul</button>
+                <button onclick="setPaymentType('card')" id="pay-card" class="py-3 rounded-xl bg-gray-800 text-white font-bold">Karta (-10%)</button>
             </div>
 
-            <div class="bg-[#0f0f0f] border border-gray-800 p-4 rounded-2xl mb-4 text-center">
-                <p id="modal-product-name" class="font-bold text-white text-lg mb-1"></p>
-                <p id="modal-product-price" class="text-2xl font-black text-orange-500"></p>
+            <div id="card-details" class="hidden mb-4 p-4 bg-black/50 border border-orange-500/30 rounded-xl cursor-pointer" onclick="copyCardNumber()">
+                <code class="text-xl font-bold">5614 6873 0683 5365</code>
+                <span class="text-xs text-gray-400 block">Mahmudov M. (Nusxalash uchun bosing)</span>
             </div>
 
-            <div class="mb-5 p-4 bg-[#111] rounded-2xl border border-gray-800">
-                <p class="text-xs text-gray-400 mb-2.5 font-bold uppercase tracking-wider" data-key="choosePayment">To'lov turini tanlang:</p>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="setPaymentType('cash')" id="pay-cash" class="py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-orange-500 text-black">
-                        <i class="fa-solid fa-money-bill-wave"></i> <span data-key="payCash">Naqd pul</span>
-                    </button>
-                    <button onclick="setPaymentType('card')" id="pay-card" class="py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-gray-800 text-gray-300">
-                        <i class="fa-solid fa-credit-card"></i> <span data-key="payCard">Karta (-10%)</span>
-                    </button>
-                </div>
-            </div>
-
-            <div id="card-details" class="hidden mb-5 p-4 bg-gradient-to-br from-orange-600/15 to-amber-500/5 border border-orange-500/20 rounded-2xl animate__animated animate__fadeIn">
-                <p class="text-orange-500 text-xs font-black uppercase tracking-wider mb-2" data-key="cardInfo">Karta Ma'lumotlari (Nusxa oling):</p>
-                <div onclick="copyCardNumber()" class="bg-black/50 border border-orange-500/30 p-3.5 rounded-xl flex justify-between items-center cursor-pointer hover:border-orange-500 transition-all active:scale-[0.98]">
-                    <div>
-                        <code class="text-xl tracking-widest text-white font-bold block" id="card-digits">5614 6873 0683 5365</code>
-                        <span class="text-[10px] text-gray-400 block mt-1">Egasining ismi: Mahmudov M.</span>
-                    </div>
-                    <button class="bg-orange-500 text-black w-8 h-8 rounded-lg flex items-center justify-center">
-                        <i class="fa-solid fa-copy text-sm"></i>
-                    </button>
-                </div>
-            </div>
-
-            <form id="order-form" onsubmit="sendTelegramOrder(event)" class="space-y-4">
-                <input type="hidden" id="form-product-title">
-                <input type="hidden" id="form-product-price">
-                
-                <div>
-                    <input type="text" id="cust-name" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-sm" placeholder="Ismingiz...">
-                </div>
-                <div>
-                    <input type="tel" id="cust-phone" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-sm" placeholder="Telefoningiz...">
-                </div>
-                
-                <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 text-sm tracking-wide btn-animate flex items-center justify-center gap-2">
-                    <span data-key="submitOrderBtn">Buyurtmani Tasdiqlash</span> <i class="fa-solid fa-paper-plane"></i>
-                </button>
+            <form id="order-form" onsubmit="sendTelegramOrder(event)" class="space-y-3">
+                <input type="text" id="cust-name" required placeholder="Ismingiz..." class="w-full bg-[#0f0f0f] border border-gray-800 p-3 rounded-xl">
+                <input type="tel" id="cust-phone" required placeholder="Telefoningiz..." class="w-full bg-[#0f0f0f] border border-gray-800 p-3 rounded-xl">
+                <button type="submit" class="w-full bg-orange-500 text-black font-black py-4 rounded-xl">Tasdiqlash</button>
             </form>
         </div>
     </div>
 
-    <!-- Admin Panel Modali -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 smooth-gpu">
-        <div class="bg-[#181818] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl animate__animated animate__zoomIn animate__fast">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-2xl font-black text-orange-500 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-plus"></i> <span data-key="adminPanelTitle">Yangi Mahsulot</span>
-                </h3>
-                <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-white bg-gray-900/50 w-8 h-8 rounded-full flex items-center justify-center border border-gray-800 btn-animate">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="addNewProduct(event)" class="space-y-4">
-                <div>
-                    <input type="text" id="new-p-title" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 text-sm" placeholder="Mahsulot nomi">
-                </div>
-                <div>
-                    <input type="number" id="new-p-price" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 text-sm" placeholder="Narxi (faqat sonlarda)">
-                </div>
-                <div>
-                    <input type="url" id="new-p-image" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 text-sm" placeholder="Rasm linki (ImgBB URL)">
-                </div>
-                <div>
-                    <textarea id="new-p-desc" rows="3" required class="w-full bg-[#0f0f0f] border border-gray-800 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500 text-sm" placeholder="Mahsulot tavsifi..."></textarea>
-                </div>
-                
-                <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 text-sm btn-animate">
-                    Qo'shish <i class="fa-solid fa-circle-check ml-1"></i>
-                </button>
+    <!-- Admin Panel -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/85 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#181818] p-6 rounded-3xl w-full max-w-md">
+            <form onsubmit="addNewProduct(event)" class="space-y-3">
+                <input type="text" id="new-p-title" required placeholder="Nomi" class="w-full bg-[#0f0f0f] p-3 rounded-xl">
+                <input type="number" id="new-p-price" required placeholder="Narxi" class="w-full bg-[#0f0f0f] p-3 rounded-xl">
+                <input type="url" id="new-p-image" required placeholder="Rasm URL" class="w-full bg-[#0f0f0f] p-3 rounded-xl">
+                <textarea id="new-p-desc" required placeholder="Tavsif" class="w-full bg-[#0f0f0f] p-3 rounded-xl"></textarea>
+                <button type="submit" class="w-full bg-orange-500 text-black py-3 rounded-xl">Qo'shish</button>
             </form>
+            <button onclick="closeAdminPanel()" class="w-full mt-3 text-gray-400">Yopish</button>
         </div>
     </div>
 
     <script>
-        // SOZLAMALAR
-        const BOT_TOKEN = '8866120283:AAFjMGqmZuqZ9xfMZCG_Fuh3zTYvY0hcHNI'; // Telegram bot token
-        const CHAT_ID = '5170028009'; // Telegram chat ID
-        const ADMIN_PIN = '7777'; // Maxfiy admin parol
-
-        // SUPABASE SOZLAMALARI (O'ZGARISHSIZ QOLADI!)
         const SUPABASE_URL = 'https://hurwvgjwjmyniescbyok.supabase.co';
         const SUPABASE_KEY = 'Sb_publishable_P2a2dR0U2PS8qZ4joayWBg_Tp8ISyqX'; 
-
-        let currentLang = 'uz';
         let currentProductPrice = 0;
         let selectedPayment = 'cash';
 
-        const translations = {
-            uz: {
-                adminBtn: "Admin",
-                catalogTitle: "Mahsulotlar katalogi",
-                buyBtn: "Sotib olish",
-                orderTitle: "Buyurtma berish",
-                choosePayment: "To'lov usulini tanlang:",
-                payCash: "Naqd pul",
-                payCard: "Karta (-10%)",
-                cardInfo: "Karta Ma'lumotlari (Nusxa oling):",
-                submitOrderBtn: "Buyurtmani Tasdiqlash",
-                adminPanelTitle: "Yangi Mahsulot Qo'shish",
-                placeholderName: "Ismingiz...",
-                placeholderPhone: "Telefoningiz...",
-                discountMsg: "10% Chegirma!"
-            },
-            ru: {
-                adminBtn: "Админ",
-                catalogTitle: "Каталог товаров",
-                buyBtn: "Купить",
-                orderTitle: "Оформить заказ",
-                choosePayment: "Выберите способ оплаты:",
-                payCash: "Наличные",
-                payCard: "Карта (-10%)",
-                cardInfo: "Данные карты (Скопируйте):",
-                submitOrderBtn: "Подтвердить заказ",
-                adminPanelTitle: "Добавить новый товар",
-                placeholderName: "Ваше имя...",
-                placeholderPhone: "Ваш телефон...",
-                discountMsg: "Скидка 10%!"
-            }
-        };
-
-        // Tilni o'zgartirish
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('lang-uz').className = lang === 'uz' ? "px-2.5 py-1 rounded-lg text-xs font-black transition-all bg-orange-500 text-black" : "px-2.5 py-1 rounded-lg text-xs font-black transition-all text-gray-400";
-            document.getElementById('lang-ru').className = lang === 'ru' ? "px-2.5 py-1 rounded-lg text-xs font-black transition-all bg-orange-500 text-black" : "px-2.5 py-1 rounded-lg text-xs font-black transition-all text-gray-400";
+        function setPaymentType(type) {
+            selectedPayment = type;
+            document.getElementById('pay-cash').className = type === 'cash' ? "py-3 rounded-xl bg-orange-500 text-black font-bold" : "py-3 rounded-xl bg-gray-800 text-white font-bold";
+            document.getElementById('pay-card').className = type === 'card' ? "py-3 rounded-xl bg-orange-500 text-black font-bold" : "py-3 rounded-xl bg-gray-800 text-white font-bold";
+            document.getElementById('card-details').classList.toggle('hidden', type === 'cash');
             
-            document.querySelectorAll('[data-key]').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
-            });
-
-            document.getElementById('cust-name').placeholder = translations[lang].placeholderName;
-            document.getElementById('cust-phone').placeholder = translations[lang].placeholderPhone;
-
-            fetchProducts();
+            const priceEl = document.getElementById('modal-product-price');
+            const finalPrice = type === 'card' ? currentProductPrice * 0.9 : currentProductPrice;
+            priceEl.innerText = Math.round(finalPrice) + " so'm";
         }
 
-        // Supabase bazasidan tovarlarni olish (Real-time va Hammaga ko'rinadigan)
-        function fetchProducts() {
-            const productsList = document.getElementById('products-list');
-            
-            fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=created_at.desc`, {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
-            })
-            .then(res => res.json())
-            .then(products => {
-                productsList.innerHTML = '';
-                if (!products || products.length === 0) {
-                    productsList.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">Hozircha mahsulotlar yo'q.</div>`;
-                    return;
-                }
-                
-                products.forEach((product, index) => {
-                    const title = currentLang === 'uz' ? product.title_uz : product.title_ru;
-                    const desc = currentLang === 'uz' ? product.desc_uz : product.desc_ru;
-                    const formattedPrice = product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
-                    
-                    const card = `
-                        <div class="product-card bg-[#151515] border border-gray-900 rounded-3xl overflow-hidden shadow-xl smooth-gpu animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s">
-                            <div class="product-card-inner">
-                                <div class="relative overflow-hidden group cursor-pointer" onclick="openZoom('${product.image}')">
-                                    <img src="${product.image}" alt="${title}" class="w-full h-56 object-cover smooth-gpu group-hover:scale-105">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                                        <i class="fa-solid fa-magnifying-glass-plus text-3xl text-orange-500 scale-75 group-hover:scale-100 transition-all"></i>
-                                    </div>
-                                </div>
-                                <div class="p-5 flex flex-col justify-between">
-                                    <div>
-                                        <h3 class="text-xl font-black text-white mb-2 tracking-wide">${title}</h3>
-                                        <p class="text-sm text-gray-400 mb-4 line-clamp-3 leading-relaxed">${desc}</p>
-                                        <div class="text-2xl font-black text-orange-500 mb-4">${formattedPrice}</div>
-                                    </div>
-                                    <button onclick="openOrderModal('${title}', ${product.price})" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black py-3.5 rounded-2xl shadow-lg shadow-orange-500/10 btn-animate text-sm">
-                                        ${translations[currentLang].buyBtn} <i class="fa-solid fa-bag-shopping ml-1"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    productsList.innerHTML += card;
-                });
-            })
-            .catch(err => {
-                console.error("Xatolik yuklashda:", err);
-                productsList.innerHTML = `<div class="col-span-full text-center text-red-500 py-10">Ma'lumotlarni yuklab bo'lmadi. SQL jadvalini yaratganingizni tekshiring!</div>`;
-            });
+        function copyCardNumber() {
+            navigator.clipboard.writeText("5614687306835365");
+            alert("Karta raqami nusxalandi!");
         }
 
-        // 3D Rasm Zoom
-        function openZoom(imageSrc) {
-            const modal = document.getElementById('zoom-modal');
-            const img = document.getElementById('zoom-img');
-            img.src = imageSrc;
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('active');
-                modal.style.opacity = '1';
-            }, 50);
-        }
-
-        function closeZoom() {
-            const modal = document.getElementById('zoom-modal');
-            modal.style.opacity = '0';
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        // Modallar boshqaruvi
         function openOrderModal(title, price) {
             currentProductPrice = price;
-            document.getElementById('form-product-title').value = title;
-            document.getElementById('form-product-price').value = price;
             document.getElementById('modal-product-name').innerText = title;
             setPaymentType('cash');
             document.getElementById('order-modal').classList.remove('hidden');
         }
 
-        function closeOrderModal() {
-            document.getElementById('order-modal').classList.add('hidden');
-        }
-
-        function setPaymentType(type) {
-            selectedPayment = type;
-            const btnCash = document.getElementById('pay-cash');
-            const btnCard = document.getElementById('pay-card');
-            const cardDetails = document.getElementById('card-details');
-            const priceEl = document.getElementById('modal-product-price');
-
-            if (type === 'cash') {
-                btnCash.className = "py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-orange-500 text-black w-full";
-                btnCard.className = "py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-gray-800 text-gray-300 w-full";
-                cardDetails.classList.add('hidden');
-                priceEl.innerText = currentProductPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
-            } else {
-                btnCash.className = "py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-gray-800 text-gray-300 w-full";
-                btnCard.className = "py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 btn-animate bg-orange-500 text-black w-full";
-                cardDetails.classList.remove('hidden');
-                const discounted = currentProductPrice * 0.9;
-                priceEl.innerText = Math.round(discounted).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ` so'm (${translations[currentLang].discountMsg})`;
-            }
-        }
-
-        function copyCardNumber() {
-            const cardNum = "5614687306835365";
-            navigator.clipboard.writeText(cardNum).then(() => {
-                alert(currentLang === 'uz' ? "Karta raqami nusxalandi!" : "Номер карты скопирован!");
-            });
-        }
-
-        function openAdminPanel() {
-            const password = prompt(currentLang === 'uz' ? "Maxfiy admin parolini kiriting:" : "Введите секретный пароль администратора:");
-            if (password === ADMIN_PIN) {
-                document.getElementById('admin-modal').classList.remove('hidden');
-            } else if (password !== null) {
-                alert(currentLang === 'uz' ? "Parol noto'g'ri!" : "Неверный пароль!");
-            }
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
-
-        // Supabase bazasiga yangi tovar qo'shish (Real-time)
         function addNewProduct(e) {
             e.preventDefault();
-            const title = document.getElementById('new-p-title').value;
-            const price = parseInt(document.getElementById('new-p-price').value);
-            const image = document.getElementById('new-p-image').value;
-            const desc = document.getElementById('new-p-desc').value;
-
             const productData = {
-                title_uz: title,
-                title_ru: title,
-                desc_uz: desc,
-                desc_ru: desc,
-                price: price,
-                image: image
+                title_uz: document.getElementById('new-p-title').value,
+                title_ru: document.getElementById('new-p-title').value,
+                desc_uz: document.getElementById('new-p-desc').value,
+                desc_ru: document.getElementById('new-p-desc').value,
+                price: parseInt(document.getElementById('new-p-price').value),
+                image: document.getElementById('new-p-image').value
             };
 
             fetch(`${SUPABASE_URL}/rest/v1/products`, {
@@ -412,79 +114,17 @@
                 headers: {
                     'apikey': SUPABASE_KEY,
                     'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=representation'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(productData)
-            })
-            .then(res => {
-                if(res.ok) {
-                    alert(currentLang === 'uz' ? "Yangi mahsulot bazaga muvaffaqiyatli qo'shildi va hammaga ko'rinadi!" : "Новый товар успешно добавлен в базу!");
-                    e.target.reset();
-                    closeAdminPanel();
-                    fetchProducts();
-                } else {
-                    alert("Xatolik yuz berdi. SQL Editor qadamini (3-qadam) bajarganingizni tekshiring!");
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Baza bilan aloqa o'rnatib bo'lmadi!");
-            });
+            }).then(() => { alert("Qo'shildi!"); location.reload(); });
         }
 
-        // Telegram buyurtma
-        function sendTelegramOrder(e) {
-            e.preventDefault();
-            const productTitle = document.getElementById('form-product-title').value;
-            const originalPrice = parseInt(document.getElementById('form-product-price').value);
-            const clientName = document.getElementById('cust-name').value;
-            const clientPhone = document.getElementById('cust-phone').value;
-
-            let finalPrice = originalPrice;
-            let paymentText = "Naqd pul";
-
-            if (selectedPayment === 'card') {
-                finalPrice = originalPrice * 0.9;
-                paymentText = "Karta (10% Chegirma bilan)";
-            }
-
-            const formattedPrice = Math.round(finalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
-
-            const message = `
-🛍 *A'LO MARKET - YANGI BUYURTMA!*
-━━━━━━━━━━━━━━━━━━━━
-📦 *Mahsulot:* ${productTitle}
-💰 *Yakuniy Narx:* ${formattedPrice}
-💳 *To'lov turi:* ${paymentText}
-━━━━━━━━━━━━━━━━━━━━
-👤 *Haridor:* ${clientName}
-📞 *Telefon:* ${clientPhone}
-`;
-
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            })
-            .then(res => {
-                if (res.ok) {
-                    alert(currentLang === 'uz' ? "Muvaffaqiyatli! Buyurtma qabul qilindi." : "Успешно! Заказ принят.");
-                    closeOrderModal();
-                    document.getElementById('order-form').reset();
-                } else {
-                    alert("Telegram orqali xabar jo'natishda xato!");
-                }
-            });
+        function openAdminPanel() {
+            if(prompt("Parol:") === '7777') document.getElementById('admin-modal').classList.remove('hidden');
         }
 
-        window.onload = () => {
-            setLanguage('uz');
-        };
+        function closeAdminPanel() { document.getElementById('admin-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
